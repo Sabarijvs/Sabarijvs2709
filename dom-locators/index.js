@@ -181,30 +181,50 @@ class DOMToPlaywrightLocators {
   }
 
   /**
-   * Extract all interactive elements
+   * Extract all interactive elements - IMPROVED
    */
   extractInteractiveElements() {
     const selectors = [
-      'button',
-      'input',
-      'select',
-      'textarea',
-      'a[href]',
-      '[role="button"]',
-      '[role="combobox"]',
-      '[role="menuitem"]',
-      '[tabindex]:not([tabindex="-1"])',
+      'button',          // All buttons
+      'input',           // All inputs (text, email, password, checkbox, radio, etc)
+      'select',          // All select dropdowns
+      'textarea',        // All textareas
+      'a',               // All links (removed [href] restriction)
+      '[role="button"]', // ARIA buttons
+      '[role="combobox"]', // ARIA dropdowns
+      '[role="menuitem"]', // ARIA menu items
+      '[role="link"]',   // ARIA links
+      '[tabindex]',      // Tab-navigable elements
+      '[onclick]',       // Click handlers
     ];
 
+    // Get all elements matching selectors
     const allElements = Array.from(
       new Set(
-        selectors.flatMap(selector =>
-          Array.from(this.document.querySelectorAll(selector))
-        )
+        selectors.flatMap(selector => {
+          try {
+            return Array.from(this.document.querySelectorAll(selector));
+          } catch (e) {
+            console.warn(`Selector failed: ${selector}`);
+            return [];
+          }
+        })
       )
     );
 
-    return allElements.map((el, index) => {
+    // Filter out hidden elements and elements with tabindex="-1"
+    const visibleElements = allElements.filter(el => {
+      if (el.getAttribute('tabindex') === '-1') return false;
+      
+      const style = this.document.defaultView?.getComputedStyle?.(el);
+      if (style && (style.display === 'none' || style.visibility === 'hidden')) {
+        return false;
+      }
+      
+      return true;
+    });
+
+    return visibleElements.map((el, index) => {
       const tag = el.tagName.toLowerCase();
       const id = el.id || null;
       const name = el.name || null;
