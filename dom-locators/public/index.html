@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -39,6 +39,8 @@
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .panel h2 {
@@ -48,14 +50,14 @@
     }
 
     textarea {
-      flex: 1;
       padding: 12px;
       border: 2px solid #e5e7eb;
       border-radius: 8px;
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 14px;
       resize: vertical;
-      min-height: 400px;
+      min-height: 300px;
+      flex: 1;
     }
 
     textarea:focus {
@@ -80,7 +82,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
-      min-width: 150px;
+      min-width: 120px;
     }
 
     .btn-primary {
@@ -106,14 +108,12 @@
     .btn-copy {
       background: #10b981;
       color: white;
+      padding: 8px 12px;
+      font-size: 12px;
     }
 
     .btn-copy:hover {
       background: #059669;
-    }
-
-    .results-section {
-      margin-top: 20px;
     }
 
     .results-tabs {
@@ -121,6 +121,7 @@
       gap: 8px;
       margin-bottom: 16px;
       border-bottom: 2px solid #e5e7eb;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
@@ -132,6 +133,7 @@
       color: #9ca3af;
       border-bottom: 3px solid transparent;
       transition: all 0.3s;
+      font-size: 13px;
     }
 
     .tab-btn.active {
@@ -141,65 +143,122 @@
 
     .tab-content {
       display: none;
+      overflow-y: auto;
+      max-height: calc(90vh - 280px);
     }
 
     .tab-content.active {
       display: block;
     }
 
-    .elements-list {
-      max-height: 600px;
-      overflow-y: auto;
-    }
-
     .element-item {
-      padding: 12px;
-      margin-bottom: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
       background: #f9fafb;
       border-left: 4px solid #667eea;
-      border-radius: 4px;
+      border-radius: 6px;
       transition: all 0.3s;
     }
 
     .element-item:hover {
       background: #f3f4f6;
       transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .element-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
     .element-tag {
       display: inline-block;
       background: #667eea;
       color: white;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: 600;
       margin-right: 8px;
     }
 
-    .element-text {
+    .element-type {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .element-label {
       display: block;
       margin: 8px 0 4px 0;
       color: #374151;
       font-weight: 500;
+      font-size: 14px;
     }
 
-    .element-locator {
-      display: block;
+    .element-category {
+      display: inline-block;
+      background: #fef08a;
+      color: #854d0e;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .locator-section {
+      margin-bottom: 10px;
       padding: 8px;
       background: white;
-      border: 1px solid #e5e7eb;
       border-radius: 4px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .locator-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .locator-code {
+      display: block;
+      padding: 6px;
+      background: #1f2937;
+      border-radius: 3px;
       font-family: 'Monaco', 'Courier New', monospace;
-      font-size: 12px;
-      color: #667eea;
+      font-size: 11px;
+      color: #10b981;
       overflow-x: auto;
-      margin-top: 4px;
+      word-break: break-all;
+      margin-bottom: 4px;
+    }
+
+    .locator-copy-btn {
+      background: #10b981;
+      color: white;
+      padding: 4px 8px;
+      font-size: 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .locator-copy-btn:hover {
+      background: #059669;
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 12px;
       margin-top: 16px;
       padding-top: 16px;
@@ -214,7 +273,7 @@
     }
 
     .stat-value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: #667eea;
     }
@@ -290,13 +349,19 @@
       font-size: 16px;
       opacity: 0.9;
     }
+
+    .no-elements {
+      text-align: center;
+      padding: 40px;
+      color: #9ca3af;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>🎯 DOM to Playwright Locators</h1>
-      <p>Convert DOM HTML to efficient Playwright locators automatically</p>
+      <p>Generate all possible locator strategies (getByRole, getByLabel, getByText, etc.)</p>
     </div>
 
     <!-- Input Panel -->
@@ -312,34 +377,28 @@
 
     <!-- Output Panel -->
     <div class="panel">
-      <h2>✨ Playwright Locators</h2>
+      <h2>✨ All Locator Strategies</h2>
 
       <div class="results-tabs">
         <button class="tab-btn active" onclick="switchTab('elements')">Elements</button>
-        <button class="tab-btn" onclick="switchTab('code')">Test Code</button>
         <button class="tab-btn" onclick="switchTab('json')">JSON</button>
+        <button class="tab-btn" onclick="switchTab('code')">Test Code</button>
       </div>
 
       <!-- Elements Tab -->
       <div id="elements" class="tab-content active">
-        <div id="elementsList" class="elements-list"></div>
+        <div id="elementsList"></div>
         <div id="elementStats" class="stats"></div>
-      </div>
-
-      <!-- Code Tab -->
-      <div id="code" class="tab-content">
-        <textarea id="codeOutput" readonly></textarea>
-        <div class="button-group" style="margin-top: 12px;">
-          <button class="btn-copy" onclick="copyToClipboard('codeOutput')">📋 Copy Code</button>
-        </div>
       </div>
 
       <!-- JSON Tab -->
       <div id="json" class="tab-content">
         <textarea id="jsonOutput" readonly></textarea>
-        <div class="button-group" style="margin-top: 12px;">
-          <button class="btn-copy" onclick="copyToClipboard('jsonOutput')">📋 Copy JSON</button>
-        </div>
+      </div>
+
+      <!-- Code Tab -->
+      <div id="code" class="tab-content">
+        <textarea id="codeOutput" readonly></textarea>
       </div>
     </div>
   </div>
@@ -354,13 +413,13 @@
           </div>
           
           <div>
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter password" />
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" />
           </div>
           
           <div>
             <label for="country">Country</label>
-            <select id="country">
+            <select id="country" aria-label="Select your country">
               <option>Select Country</option>
               <option>USA</option>
               <option>UK</option>
@@ -369,12 +428,12 @@
           </div>
           
           <div>
-            <input type="checkbox" id="agree" />
+            <input type="checkbox" id="agree" data-testid="agree-checkbox" />
             <label for="agree">I agree to terms</label>
           </div>
           
-          <button type="submit">Login</button>
-          <button type="reset">Reset</button>
+          <button type="submit" class="btn-submit">Login</button>
+          <button type="reset" class="btn-reset">Reset</button>
           <a href="/">Back to Home</a>
         </form>
       `;
@@ -392,28 +451,21 @@
       try {
         showLoading();
 
-        const locatorsResponse = await fetch('/api/generate/json', {
+        const response = await fetch('/api/generate/json', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ html }),
         });
 
-        const codeResponse = await fetch('/api/generate/code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ html }),
-        });
+        const data = await response.json();
 
-        const locatorsData = await locatorsResponse.json();
-        const codeData = await codeResponse.json();
-
-        if (!locatorsData.success || !codeData.success) {
+        if (!data.success) {
           throw new Error('Failed to generate locators');
         }
 
-        displayElements(locatorsData.elements);
-        document.getElementById('codeOutput').value = codeData.code;
-        document.getElementById('jsonOutput').value = JSON.stringify(locatorsData, null, 2);
+        displayElements(data.elements);
+        document.getElementById('jsonOutput').value = JSON.stringify(data, null, 2);
+        document.getElementById('codeOutput').value = generateTestCode(data.elements);
 
         showToast('Locators generated successfully!');
       } catch (error) {
@@ -422,12 +474,33 @@
       }
     }
 
+    function generateTestCode(elements) {
+      const code = `import { test, expect } from '@playwright/test';
+
+test('interact with page elements', async ({ page }) => {
+  await page.goto('YOUR_URL_HERE');
+
+  // Generated locators for ${elements.length} interactive elements:
+${elements
+  .map((el, idx) => {
+    const locator = el.allLocators?.role || el.playwrightLocator;
+    return `
+  // ${el.tag.toUpperCase()} - ${el.text || el.placeholder || el.ariaLabel || 'Element ' + idx}
+  const element${idx} = page.${locator};
+  // await element${idx}.click();`;
+  })
+  .join('\n')}
+});`;
+      return code;
+    }
+
     function displayElements(elements) {
       const elementsList = document.getElementById('elementsList');
       elementsList.innerHTML = '';
 
       if (elements.length === 0) {
-        elementsList.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 40px;">No interactive elements found</p>';
+        elementsList.innerHTML = '<div class="no-elements">No interactive elements found</div>';
+        document.getElementById('elementStats').innerHTML = '';
         return;
       }
 
@@ -439,37 +512,131 @@
         others: 0,
       };
 
-      elements.forEach((el) => {
+      elements.forEach((el, idx) => {
         const item = document.createElement('div');
         item.className = 'element-item';
 
         let icon = '📦';
-        if (el.tag === 'button') icon = '🔘';
-        else if (el.tag === 'input') icon = '📝';
-        else if (el.tag === 'select') icon = '📋';
-        else if (el.tag === 'a') icon = '🔗';
+        let category = 'Element';
+        if (el.tag === 'button') {
+          icon = '🔘';
+          category = 'Button';
+          stats.buttons++;
+        } else if (el.tag === 'input') {
+          icon = '📝';
+          category = `Input (${el.type || 'text'})`;
+          stats.inputs++;
+        } else if (el.tag === 'select') {
+          icon = '📋';
+          category = 'Dropdown';
+          stats.selects++;
+        } else if (el.tag === 'a') {
+          icon = '🔗';
+          category = 'Link';
+          stats.links++;
+        } else {
+          stats.others++;
+        }
 
         const text = el.text || el.placeholder || el.ariaLabel || '(No label)';
-        const locator = el.playwrightLocator;
+        const allLocators = el.allLocators || {};
+
+        let locatorsHtml = '';
+
+        // Role
+        if (allLocators.role) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">🎯 getByRole</div>
+              <code class="locator-code">${escapeHtml(allLocators.role)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.role)}')">Copy</button>
+            </div>`;
+        }
+
+        // Label
+        if (allLocators.label) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">🏷️ getByLabel</div>
+              <code class="locator-code">${escapeHtml(allLocators.label)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.label)}')">Copy</button>
+            </div>`;
+        }
+
+        // Placeholder
+        if (allLocators.placeholder) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">📌 getByPlaceholder</div>
+              <code class="locator-code">${escapeHtml(allLocators.placeholder)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.placeholder)}')">Copy</button>
+            </div>`;
+        }
+
+        // Text
+        if (allLocators.text) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">📄 getByText</div>
+              <code class="locator-code">${escapeHtml(allLocators.text)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.text)}')">Copy</button>
+            </div>`;
+        }
+
+        // TestID
+        if (allLocators.testid) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">🔍 getByTestId</div>
+              <code class="locator-code">${escapeHtml(allLocators.testid)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.testid)}')">Copy</button>
+            </div>`;
+        }
+
+        // Attributes
+        if (allLocators.attributes && allLocators.attributes.length > 0) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">⚙️ getByAttribute/CSS</div>
+              ${allLocators.attributes
+                .map(
+                  (attr) => `
+                <code class="locator-code">${escapeHtml(attr)}</code>
+                <button class="locator-copy-btn" onclick="copyCode('${escapeCode(attr)}')">Copy</button>
+              `
+                )
+                .join('')}
+            </div>`;
+        }
+
+        // CSS Selector
+        if (allLocators.css) {
+          locatorsHtml += `
+            <div class="locator-section">
+              <div class="locator-title">🎨 CSS Selector</div>
+              <code class="locator-code">${escapeHtml(allLocators.css)}</code>
+              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.css)}')">Copy</button>
+            </div>`;
+        }
 
         item.innerHTML = `
-          <div>
-            <span class="element-tag">${icon} ${el.tag}</span>
-            ${el.type ? `<span style="font-size: 12px; color: #6b7280;">(${el.type})</span>` : ''}
+          <div class="element-header">
+            <div>
+              <span class="element-tag">${icon} ${el.tag.toUpperCase()}</span>
+              <span class="element-type">${el.type || 'interactive'}</span>
+            </div>
+            <span class="element-category">${category}</span>
           </div>
-          <span class="element-text">${text}</span>
-          <code class="element-locator">page.${locator}</code>
+          <span class="element-label">${text}</span>
+          ${el.id ? `<div style="font-size: 11px; color: #6b7280;">ID: <code style="background: #f0f0f0; padding: 2px 4px;">${el.id}</code></div>` : ''}
+          ${el.name ? `<div style="font-size: 11px; color: #6b7280;">Name: <code style="background: #f0f0f0; padding: 2px 4px;">${el.name}</code></div>` : ''}
+          <div style="margin-top: 10px;">${locatorsHtml}</div>
         `;
 
         elementsList.appendChild(item);
-
-        if (el.tag === 'button') stats.buttons++;
-        else if (el.tag === 'input') stats.inputs++;
-        else if (el.tag === 'select') stats.selects++;
-        else if (el.tag === 'a') stats.links++;
-        else stats.others++;
       });
 
+      // Display stats
       const statsHtml = `
         <div class="stat-card">
           <div class="stat-value">${elements.length}</div>
@@ -485,10 +652,31 @@
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.selects}</div>
-          <div class="stat-label">Selects</div>
+          <div class="stat-label">Dropdowns</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.links}</div>
+          <div class="stat-label">Links</div>
         </div>
       `;
       document.getElementById('elementStats').innerHTML = statsHtml;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function escapeCode(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function copyCode(code) {
+      const text = code.replace(/\\\\/g, '\\');
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard!');
+      });
     }
 
     function switchTab(tabName) {
@@ -497,13 +685,6 @@
 
       document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
-    }
-
-    function copyToClipboard(elementId) {
-      const element = document.getElementById(elementId);
-      element.select();
-      document.execCommand('copy');
-      showToast('Copied to clipboard!');
     }
 
     function clearInput() {
