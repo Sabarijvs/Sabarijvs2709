@@ -22,11 +22,17 @@
       max-width: 1600px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 20px;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
       .container {
         grid-template-columns: 1fr;
       }
@@ -116,7 +122,7 @@
       background: #059669;
     }
 
-    .results-tabs {
+    .filter-tabs {
       display: flex;
       gap: 8px;
       margin-bottom: 16px;
@@ -124,8 +130,8 @@
       flex-wrap: wrap;
     }
 
-    .tab-btn {
-      padding: 8px 16px;
+    .filter-btn {
+      padding: 8px 12px;
       border: none;
       background: none;
       cursor: pointer;
@@ -136,18 +142,18 @@
       font-size: 13px;
     }
 
-    .tab-btn.active {
+    .filter-btn.active {
       color: #667eea;
       border-bottom-color: #667eea;
     }
 
-    .tab-content {
+    .filter-content {
       display: none;
       overflow-y: auto;
       max-height: calc(90vh - 280px);
     }
 
-    .tab-content.active {
+    .filter-content.active {
       display: block;
     }
 
@@ -212,53 +218,52 @@
       margin-bottom: 8px;
     }
 
-    .locator-section {
-      margin-bottom: 10px;
-      padding: 8px;
-      background: white;
-      border-radius: 4px;
-      border: 1px solid #e5e7eb;
+    .element-info {
+      font-size: 11px;
+      color: #6b7280;
+      margin: 4px 0;
     }
 
-    .locator-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #6b7280;
-      text-transform: uppercase;
-      margin-bottom: 4px;
+    .element-info code {
+      background: #f0f0f0;
+      padding: 2px 4px;
+      border-radius: 2px;
     }
 
     .locator-code {
       display: block;
-      padding: 6px;
+      padding: 10px;
       background: #1f2937;
-      border-radius: 3px;
+      border-radius: 4px;
       font-family: 'Monaco', 'Courier New', monospace;
-      font-size: 11px;
+      font-size: 12px;
       color: #10b981;
       overflow-x: auto;
       word-break: break-all;
-      margin-bottom: 4px;
+      margin: 8px 0;
+      border: 1px solid #374151;
     }
 
-    .locator-copy-btn {
+    .element-action-btn {
       background: #10b981;
       color: white;
-      padding: 4px 8px;
-      font-size: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
       border: none;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
       transition: background 0.2s;
+      margin-top: 8px;
+      width: 100%;
     }
 
-    .locator-copy-btn:hover {
+    .element-action-btn:hover {
       background: #059669;
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 12px;
       margin-top: 16px;
       padding-top: 16px;
@@ -355,13 +360,104 @@
       padding: 40px;
       color: #9ca3af;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h3 {
+      margin-bottom: 20px;
+      color: #1f2937;
+      font-size: 18px;
+    }
+
+    .modal-section {
+      margin-bottom: 20px;
+    }
+
+    .modal-section-title {
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .locator-option {
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .locator-option:hover {
+      background: #e5e7eb;
+      border-color: #667eea;
+    }
+
+    .locator-option code {
+      display: block;
+      background: white;
+      padding: 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #10b981;
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+
+    .close-modal {
+      color: #9ca3af;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-modal:hover {
+      color: #1f2937;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>🎯 DOM to Playwright Locators</h1>
-      <p>Generate all possible locator strategies (getByRole, getByLabel, getByText, etc.)</p>
+      <p>Generate all possible locator strategies with detailed element information</p>
     </div>
 
     <!-- Input Panel -->
@@ -375,35 +471,56 @@
       </div>
     </div>
 
-    <!-- Output Panel -->
+    <!-- Elements Panel -->
     <div class="panel">
-      <h2>✨ All Locator Strategies</h2>
+      <h2>✨ Elements</h2>
 
-      <div class="results-tabs">
-        <button class="tab-btn active" onclick="switchTab('elements')">Elements</button>
-        <button class="tab-btn" onclick="switchTab('json')">JSON</button>
-        <button class="tab-btn" onclick="switchTab('code')">Test Code</button>
+      <div class="filter-tabs">
+        <button class="filter-btn active" onclick="filterElements('all')">All</button>
+        <button class="filter-btn" onclick="filterElements('button')">Buttons</button>
+        <button class="filter-btn" onclick="filterElements('input')">Inputs</button>
+        <button class="filter-btn" onclick="filterElements('select')">Dropdowns</button>
+        <button class="filter-btn" onclick="filterElements('a')">Links</button>
       </div>
 
-      <!-- Elements Tab -->
-      <div id="elements" class="tab-content active">
-        <div id="elementsList"></div>
-        <div id="elementStats" class="stats"></div>
+      <div id="elementsList" class="filter-content active"></div>
+      <div id="elementStats" class="stats"></div>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="panel">
+      <h2>🔍 Details & Locators</h2>
+      <div id="detailsPanel" class="filter-content active" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af;">
+        <p style="text-align: center;">Select an element to see all available locator strategies</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for generating new locators -->
+  <div id="locatorModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h3>🎯 Generate Locator</h3>
+      
+      <div class="modal-section">
+        <div class="modal-section-title">Element Information</div>
+        <div id="modalElementInfo"></div>
       </div>
 
-      <!-- JSON Tab -->
-      <div id="json" class="tab-content">
-        <textarea id="jsonOutput" readonly></textarea>
+      <div class="modal-section">
+        <div class="modal-section-title">Available Locators</div>
+        <div id="modalLocators"></div>
       </div>
 
-      <!-- Code Tab -->
-      <div id="code" class="tab-content">
-        <textarea id="codeOutput" readonly></textarea>
+      <div style="margin-top: 20px;">
+        <button class="btn-secondary" onclick="closeModal()">Close</button>
       </div>
     </div>
   </div>
 
   <script>
+    let allElements = [];
+
     function loadExample() {
       const exampleHtml = `
         <form>
@@ -463,9 +580,9 @@
           throw new Error('Failed to generate locators');
         }
 
+        allElements = data.elements;
         displayElements(data.elements);
-        document.getElementById('jsonOutput').value = JSON.stringify(data, null, 2);
-        document.getElementById('codeOutput').value = generateTestCode(data.elements);
+        displayStats(data.elements);
 
         showToast('Locators generated successfully!');
       } catch (error) {
@@ -474,24 +591,14 @@
       }
     }
 
-    function generateTestCode(elements) {
-      const code = `import { test, expect } from '@playwright/test';
+    function filterElements(type) {
+      // Update active tab
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
 
-test('interact with page elements', async ({ page }) => {
-  await page.goto('YOUR_URL_HERE');
-
-  // Generated locators for ${elements.length} interactive elements:
-${elements
-  .map((el, idx) => {
-    const locator = el.allLocators?.role || el.playwrightLocator;
-    return `
-  // ${el.tag.toUpperCase()} - ${el.text || el.placeholder || el.ariaLabel || 'Element ' + idx}
-  const element${idx} = page.${locator};
-  // await element${idx}.click();`;
-  })
-  .join('\n')}
-});`;
-      return code;
+      // Filter elements
+      const filtered = type === 'all' ? allElements : allElements.filter(el => el.tag === type);
+      displayElements(filtered);
     }
 
     function displayElements(elements) {
@@ -500,147 +607,51 @@ ${elements
 
       if (elements.length === 0) {
         elementsList.innerHTML = '<div class="no-elements">No interactive elements found</div>';
-        document.getElementById('elementStats').innerHTML = '';
         return;
       }
-
-      const stats = {
-        buttons: 0,
-        inputs: 0,
-        selects: 0,
-        links: 0,
-        others: 0,
-      };
 
       elements.forEach((el, idx) => {
         const item = document.createElement('div');
         item.className = 'element-item';
 
         let icon = '📦';
-        let category = 'Element';
-        if (el.tag === 'button') {
-          icon = '🔘';
-          category = 'Button';
-          stats.buttons++;
-        } else if (el.tag === 'input') {
-          icon = '📝';
-          category = `Input (${el.type || 'text'})`;
-          stats.inputs++;
-        } else if (el.tag === 'select') {
-          icon = '📋';
-          category = 'Dropdown';
-          stats.selects++;
-        } else if (el.tag === 'a') {
-          icon = '🔗';
-          category = 'Link';
-          stats.links++;
-        } else {
-          stats.others++;
-        }
+        if (el.tag === 'button') icon = '🔘';
+        else if (el.tag === 'input') icon = '📝';
+        else if (el.tag === 'select') icon = '📋';
+        else if (el.tag === 'a') icon = '🔗';
 
         const text = el.text || el.placeholder || el.ariaLabel || '(No label)';
-        const allLocators = el.allLocators || {};
-
-        let locatorsHtml = '';
-
-        // Role
-        if (allLocators.role) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">🎯 getByRole</div>
-              <code class="locator-code">${escapeHtml(allLocators.role)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.role)}')">Copy</button>
-            </div>`;
-        }
-
-        // Label
-        if (allLocators.label) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">🏷️ getByLabel</div>
-              <code class="locator-code">${escapeHtml(allLocators.label)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.label)}')">Copy</button>
-            </div>`;
-        }
-
-        // Placeholder
-        if (allLocators.placeholder) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">📌 getByPlaceholder</div>
-              <code class="locator-code">${escapeHtml(allLocators.placeholder)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.placeholder)}')">Copy</button>
-            </div>`;
-        }
-
-        // Text
-        if (allLocators.text) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">📄 getByText</div>
-              <code class="locator-code">${escapeHtml(allLocators.text)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.text)}')">Copy</button>
-            </div>`;
-        }
-
-        // TestID
-        if (allLocators.testid) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">🔍 getByTestId</div>
-              <code class="locator-code">${escapeHtml(allLocators.testid)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.testid)}')">Copy</button>
-            </div>`;
-        }
-
-        // Attributes
-        if (allLocators.attributes && allLocators.attributes.length > 0) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">⚙️ getByAttribute/CSS</div>
-              ${allLocators.attributes
-                .map(
-                  (attr) => `
-                <code class="locator-code">${escapeHtml(attr)}</code>
-                <button class="locator-copy-btn" onclick="copyCode('${escapeCode(attr)}')">Copy</button>
-              `
-                )
-                .join('')}
-            </div>`;
-        }
-
-        // CSS Selector
-        if (allLocators.css) {
-          locatorsHtml += `
-            <div class="locator-section">
-              <div class="locator-title">🎨 CSS Selector</div>
-              <code class="locator-code">${escapeHtml(allLocators.css)}</code>
-              <button class="locator-copy-btn" onclick="copyCode('${escapeCode(allLocators.css)}')">Copy</button>
-            </div>`;
-        }
 
         item.innerHTML = `
           <div class="element-header">
             <div>
               <span class="element-tag">${icon} ${el.tag.toUpperCase()}</span>
-              <span class="element-type">${el.type || 'interactive'}</span>
+              ${el.type ? `<span class="element-type">${el.type}</span>` : ''}
             </div>
-            <span class="element-category">${category}</span>
           </div>
           <span class="element-label">${text}</span>
-          ${el.id ? `<div style="font-size: 11px; color: #6b7280;">ID: <code style="background: #f0f0f0; padding: 2px 4px;">${el.id}</code></div>` : ''}
-          ${el.name ? `<div style="font-size: 11px; color: #6b7280;">Name: <code style="background: #f0f0f0; padding: 2px 4px;">${el.name}</code></div>` : ''}
-          <div style="margin-top: 10px;">${locatorsHtml}</div>
+          ${el.id ? `<div class="element-info">ID: <code>${el.id}</code></div>` : ''}
+          ${el.name ? `<div class="element-info">Name: <code>${el.name}</code></div>` : ''}
+          ${el.placeholder ? `<div class="element-info">Placeholder: <code>${el.placeholder}</code></div>` : ''}
+          <button class="element-action-btn" onclick="openLocatorModal(${allElements.indexOf(el)})">🎯 View All Locators</button>
         `;
 
         elementsList.appendChild(item);
       });
+    }
 
-      // Display stats
+    function displayStats(elements) {
+      const stats = {
+        buttons: elements.filter(e => e.tag === 'button').length,
+        inputs: elements.filter(e => e.tag === 'input').length,
+        selects: elements.filter(e => e.tag === 'select').length,
+        links: elements.filter(e => e.tag === 'a').length,
+      };
+
       const statsHtml = `
         <div class="stat-card">
           <div class="stat-value">${elements.length}</div>
-          <div class="stat-label">Total Elements</div>
+          <div class="stat-label">Total</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.buttons}</div>
@@ -652,7 +663,7 @@ ${elements
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.selects}</div>
-          <div class="stat-label">Dropdowns</div>
+          <div class="stat-label">Selects</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.links}</div>
@@ -660,6 +671,93 @@ ${elements
         </div>
       `;
       document.getElementById('elementStats').innerHTML = statsHtml;
+    }
+
+    function openLocatorModal(index) {
+      const el = allElements[index];
+
+      // Element info
+      let infoHtml = `
+        <div class="element-info"><strong>Tag:</strong> ${el.tag.toUpperCase()}</div>
+        <div class="element-info"><strong>Text:</strong> ${el.text || '(none)'}</div>
+      `;
+      if (el.placeholder) infoHtml += `<div class="element-info"><strong>Placeholder:</strong> ${el.placeholder}</div>`;
+      if (el.id) infoHtml += `<div class="element-info"><strong>ID:</strong> <code>${el.id}</code></div>`;
+      if (el.name) infoHtml += `<div class="element-info"><strong>Name:</strong> <code>${el.name}</code></div>`;
+      if (el.type) infoHtml += `<div class="element-info"><strong>Type:</strong> ${el.type}</div>`;
+      if (el.ariaLabel) infoHtml += `<div class="element-info"><strong>Aria Label:</strong> ${el.ariaLabel}</div>`;
+      if (el.testId) infoHtml += `<div class="element-info"><strong>Test ID:</strong> <code>${el.testId}</code></div>`;
+
+      document.getElementById('modalElementInfo').innerHTML = infoHtml;
+
+      // Locators
+      const allLocators = el.allLocators || {};
+      let locatorsHtml = '';
+
+      if (allLocators.role) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.role)}')">
+            <strong>🎯 getByRole</strong>
+            <code>${escapeHtml(allLocators.role)}</code>
+          </div>`;
+      }
+
+      if (allLocators.label) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.label)}')">
+            <strong>🏷️ getByLabel</strong>
+            <code>${escapeHtml(allLocators.label)}</code>
+          </div>`;
+      }
+
+      if (allLocators.placeholder) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.placeholder)}')">
+            <strong>📌 getByPlaceholder</strong>
+            <code>${escapeHtml(allLocators.placeholder)}</code>
+          </div>`;
+      }
+
+      if (allLocators.text) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.text)}')">
+            <strong>📄 getByText</strong>
+            <code>${escapeHtml(allLocators.text)}</code>
+          </div>`;
+      }
+
+      if (allLocators.testid) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.testid)}')">
+            <strong>🔍 getByTestId</strong>
+            <code>${escapeHtml(allLocators.testid)}</code>
+          </div>`;
+      }
+
+      if (allLocators.attributes && allLocators.attributes.length > 0) {
+        allLocators.attributes.forEach((attr, i) => {
+          locatorsHtml += `
+            <div class="locator-option" onclick="copyCode('${escapeCode(attr)}')">
+              <strong>⚙️ Attribute Selector ${i + 1}</strong>
+              <code>${escapeHtml(attr)}</code>
+            </div>`;
+        });
+      }
+
+      if (allLocators.css) {
+        locatorsHtml += `
+          <div class="locator-option" onclick="copyCode('${escapeCode(allLocators.css)}')">
+            <strong>🎨 CSS Selector</strong>
+            <code>${escapeHtml(allLocators.css)}</code>
+          </div>`;
+      }
+
+      document.getElementById('modalLocators').innerHTML = locatorsHtml;
+      document.getElementById('locatorModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('locatorModal').classList.remove('show');
     }
 
     function escapeHtml(str) {
@@ -675,24 +773,15 @@ ${elements
     function copyCode(code) {
       const text = code.replace(/\\\\/g, '\\');
       navigator.clipboard.writeText(text).then(() => {
-        showToast('Copied to clipboard!');
+        showToast('✅ Copied to clipboard!');
       });
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach((el) => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach((el) => el.classList.remove('active'));
-
-      document.getElementById(tabName).classList.add('active');
-      event.target.classList.add('active');
     }
 
     function clearInput() {
       document.getElementById('htmlInput').value = '';
       document.getElementById('elementsList').innerHTML = '';
       document.getElementById('elementStats').innerHTML = '';
-      document.getElementById('codeOutput').value = '';
-      document.getElementById('jsonOutput').value = '';
+      document.getElementById('detailsPanel').innerHTML = '<p style="text-align: center;">Select an element to see all available locator strategies</p>';
     }
 
     function showLoading() {
@@ -718,6 +807,14 @@ ${elements
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         generateLocators();
+      }
+    });
+
+    // Close modal on background click
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('locatorModal');
+      if (e.target === modal) {
+        closeModal();
       }
     });
   </script>
