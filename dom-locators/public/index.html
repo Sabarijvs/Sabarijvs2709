@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOM to Playwright Locators Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel h2 {
+      margin-bottom: 16px;
+      color: #1f2937;
+      font-size: 20px;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 400px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      min-width: 150px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 2px solid #e5e7eb;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-copy {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-copy:hover {
+      background: #059669;
+    }
+
+    .results-section {
+      margin-top: 20px;
+    }
+
+    .results-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: #9ca3af;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .elements-list {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .element-item {
+      padding: 12px;
+      margin-bottom: 8px;
+      background: #f9fafb;
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .element-item:hover {
+      background: #f3f4f6;
+      transform: translateX(4px);
+    }
+
+    .element-tag {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .element-text {
+      display: block;
+      margin: 8px 0 4px 0;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .element-locator {
+      display: block;
+      padding: 8px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: #667eea;
+      overflow-x: auto;
+      margin-top: 4px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 2px solid #e5e7eb;
+    }
+
+    .stat-card {
+      background: #f3f4f6;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background: #10b981;
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.3s ease-out;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .error {
+      background: #ef4444 !important;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 DOM to Playwright Locators</h1>
+      <p>Convert DOM HTML to efficient Playwright locators automatically</p>
+    </div>
+
+    <!-- Input Panel -->
+    <div class="panel">
+      <h2>📝 Input HTML</h2>
+      <textarea id="htmlInput" placeholder="Paste your HTML here..."></textarea>
+      <div class="button-group">
+        <button class="btn-primary" onclick="generateLocators()">Generate Locators</button>
+        <button class="btn-secondary" onclick="clearInput()">Clear</button>
+        <button class="btn-secondary" onclick="loadExample()">Load Example</button>
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div class="panel">
+      <h2>✨ Playwright Locators</h2>
+
+      <div class="results-tabs">
+        <button class="tab-btn active" onclick="switchTab('elements')">Elements</button>
+        <button class="tab-btn" onclick="switchTab('code')">Test Code</button>
+        <button class="tab-btn" onclick="switchTab('json')">JSON</button>
+      </div>
+
+      <!-- Elements Tab -->
+      <div id="elements" class="tab-content active">
+        <div id="elementsList" class="elements-list"></div>
+        <div id="elementStats" class="stats"></div>
+      </div>
+
+      <!-- Code Tab -->
+      <div id="code" class="tab-content">
+        <textarea id="codeOutput" readonly></textarea>
+        <div class="button-group" style="margin-top: 12px;">
+          <button class="btn-copy" onclick="copyToClipboard('codeOutput')">📋 Copy Code</button>
+        </div>
+      </div>
+
+      <!-- JSON Tab -->
+      <div id="json" class="tab-content">
+        <textarea id="jsonOutput" readonly></textarea>
+        <div class="button-group" style="margin-top: 12px;">
+          <button class="btn-copy" onclick="copyToClipboard('jsonOutput')">📋 Copy JSON</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function loadExample() {
+      const exampleHtml = `
+        <form>
+          <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter username" />
+          </div>
+          
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" />
+          </div>
+          
+          <div>
+            <label for="country">Country</label>
+            <select id="country">
+              <option>Select Country</option>
+              <option>USA</option>
+              <option>UK</option>
+              <option>India</option>
+            </select>
+          </div>
+          
+          <div>
+            <input type="checkbox" id="agree" />
+            <label for="agree">I agree to terms</label>
+          </div>
+          
+          <button type="submit">Login</button>
+          <button type="reset">Reset</button>
+          <a href="/">Back to Home</a>
+        </form>
+      `;
+      document.getElementById('htmlInput').value = exampleHtml;
+    }
+
+    async function generateLocators() {
+      const html = document.getElementById('htmlInput').value;
+
+      if (!html.trim()) {
+        showToast('Please paste HTML content', true);
+        return;
+      }
+
+      try {
+        showLoading();
+
+        const locatorsResponse = await fetch('/api/generate/json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html }),
+        });
+
+        const codeResponse = await fetch('/api/generate/code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html }),
+        });
+
+        const locatorsData = await locatorsResponse.json();
+        const codeData = await codeResponse.json();
+
+        if (!locatorsData.success || !codeData.success) {
+          throw new Error('Failed to generate locators');
+        }
+
+        displayElements(locatorsData.elements);
+        document.getElementById('codeOutput').value = codeData.code;
+        document.getElementById('jsonOutput').value = JSON.stringify(locatorsData, null, 2);
+
+        showToast('Locators generated successfully!');
+      } catch (error) {
+        showToast(error.message, true);
+        console.error(error);
+      }
+    }
+
+    function displayElements(elements) {
+      const elementsList = document.getElementById('elementsList');
+      elementsList.innerHTML = '';
+
+      if (elements.length === 0) {
+        elementsList.innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 40px;">No interactive elements found</p>';
+        return;
+      }
+
+      const stats = {
+        buttons: 0,
+        inputs: 0,
+        selects: 0,
+        links: 0,
+        others: 0,
+      };
+
+      elements.forEach((el) => {
+        const item = document.createElement('div');
+        item.className = 'element-item';
+
+        let icon = '📦';
+        if (el.tag === 'button') icon = '🔘';
+        else if (el.tag === 'input') icon = '📝';
+        else if (el.tag === 'select') icon = '📋';
+        else if (el.tag === 'a') icon = '🔗';
+
+        const text = el.text || el.placeholder || el.ariaLabel || '(No label)';
+        const locator = el.playwrightLocator;
+
+        item.innerHTML = `
+          <div>
+            <span class="element-tag">${icon} ${el.tag}</span>
+            ${el.type ? `<span style="font-size: 12px; color: #6b7280;">(${el.type})</span>` : ''}
+          </div>
+          <span class="element-text">${text}</span>
+          <code class="element-locator">page.${locator}</code>
+        `;
+
+        elementsList.appendChild(item);
+
+        if (el.tag === 'button') stats.buttons++;
+        else if (el.tag === 'input') stats.inputs++;
+        else if (el.tag === 'select') stats.selects++;
+        else if (el.tag === 'a') stats.links++;
+        else stats.others++;
+      });
+
+      const statsHtml = `
+        <div class="stat-card">
+          <div class="stat-value">${elements.length}</div>
+          <div class="stat-label">Total Elements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.buttons}</div>
+          <div class="stat-label">Buttons</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.inputs}</div>
+          <div class="stat-label">Inputs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.selects}</div>
+          <div class="stat-label">Selects</div>
+        </div>
+      `;
+      document.getElementById('elementStats').innerHTML = statsHtml;
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach((el) => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach((el) => el.classList.remove('active'));
+
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      element.select();
+      document.execCommand('copy');
+      showToast('Copied to clipboard!');
+    }
+
+    function clearInput() {
+      document.getElementById('htmlInput').value = '';
+      document.getElementById('elementsList').innerHTML = '';
+      document.getElementById('elementStats').innerHTML = '';
+      document.getElementById('codeOutput').value = '';
+      document.getElementById('jsonOutput').value = '';
+    }
+
+    function showLoading() {
+      document.getElementById('elementsList').innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Generating locators...</p>
+        </div>
+      `;
+    }
+
+    function showToast(message, isError = false) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${isError ? 'error' : ''}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        generateLocators();
+      }
+    });
+  </script>
+</body>
+</html>
