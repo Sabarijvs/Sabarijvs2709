@@ -14,6 +14,88 @@ class DOMToPlaywrightLocators {
   }
 
   /**
+   * Generate all possible locator strategies
+   */
+  generateAllLocators(element) {
+    const locators = {};
+    const tag = element.tagName.toLowerCase();
+    const text = element.innerText?.trim();
+    const placeholder = element.placeholder;
+    const ariaLabel = element.getAttribute('aria-label');
+    const testId = element.getAttribute('data-testid');
+    const name = element.name;
+    const id = element.id;
+    const type = element.type;
+
+    // 1. Role-based (most accessible)
+    const roleLocator = this.generateRoleLocator(element);
+    if (roleLocator) {
+      locators.role = roleLocator;
+    }
+
+    // 2. Label-based
+    if (ariaLabel) {
+      locators.label = `getByLabel('${this.escapeText(ariaLabel)}')`;
+    }
+
+    // 3. Placeholder-based
+    if (placeholder) {
+      locators.placeholder = `getByPlaceholder('${this.escapeText(placeholder)}')`;
+    }
+
+    // 4. Text-based
+    if (text && text.length < 100 && text.length > 0 && !text.includes('\n')) {
+      locators.text = `getByText('${this.escapeText(text)}')`;
+    }
+
+    // 5. TestID-based
+    if (testId) {
+      locators.testid = `getByTestId('${testId}')`;
+    }
+
+    // 6. Attribute-based (name, id, etc)
+    const attributeLocators = this.generateAttributeLocators(element);
+    if (attributeLocators.length > 0) {
+      locators.attributes = attributeLocators;
+    }
+
+    // 7. CSS Selector (fallback)
+    const selector = this.generateSelector(element);
+    locators.css = `locator('${selector}')`;
+
+    return locators;
+  }
+
+  /**
+   * Generate attribute-based locators
+   */
+  generateAttributeLocators(element) {
+    const locators = [];
+    const id = element.id;
+    const name = element.name;
+    const dataAttributes = [];
+
+    // ID attribute
+    if (id) {
+      locators.push(`locator('#${this.escapeCssSelector(id)}')`);
+    }
+
+    // Name attribute
+    if (name) {
+      locators.push(`locator('[name="${this.escapeCssSelector(name)}"]')`);
+    }
+
+    // Data attributes
+    for (const attr of element.attributes) {
+      if (attr.name.startsWith('data-') && attr.name !== 'data-testid') {
+        locators.push(`locator('[${attr.name}="${attr.value}"]')`);
+      }
+    }
+
+    return locators;
+  }
+
+  /**
    * Generate unique selectors for elements
    */
   generateSelector(element) {
@@ -233,6 +315,7 @@ class DOMToPlaywrightLocators {
       const placeholder = el.placeholder || null;
       const ariaLabel = el.getAttribute('aria-label') || null;
       const testId = el.getAttribute('data-testid') || null;
+      const allLocators = this.generateAllLocators(el);
 
       return {
         index,
@@ -246,6 +329,7 @@ class DOMToPlaywrightLocators {
         testId,
         selector: this.generateSelector(el),
         playwrightLocator: this.generatePlaywrightLocator(el),
+        allLocators: allLocators, // NEW: All locator strategies
       };
     });
   }
